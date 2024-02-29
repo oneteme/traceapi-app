@@ -26,6 +26,7 @@ export class SessionApiComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['status', 'app_name', 'method/path', 'query', 'start', 'Durée', 'user'];
   dataSource: MatTableDataSource<IncomingRequest> = new MatTableDataSource();
   isLoading = true;
+  serverNameIsLoading=true;
   statusFilter: string[] = [];
   subscriptions: Subscription[] = [];
   serverFilterForm = new FormGroup({
@@ -62,6 +63,10 @@ export class SessionApiComponent implements OnInit, OnDestroy {
           this.params.start = params['start'];
           this.params.end = params['end']
           this.params.serveurs = Array.isArray(params['name']) ? params['name'] : [params['name'] || ''];
+          if(this.params.serveurs[0]!=''){
+            this.patchServerValue(this.params.serveurs)
+          }
+
           if (!this.params.start || !this.params.end) {
             this.params.start = this.DEFAULT_START.toISOString();
             this.params.end = this.DEFAULT_END.toISOString();
@@ -71,11 +76,15 @@ export class SessionApiComponent implements OnInit, OnDestroy {
           this.params.endExclusive = this.params.endExclusive.toISOString();
 
           this.patchDateValue(this.params.start, this.params.end);
-          this.subscriptions.push(this._statsService.getIncomingRequest({ 'column.distinct': 'app_name', 'environement': this.params.env, 'start.ge': this.params.start, 'start.le': this.params.endExclusive, 'order': 'app_name.asc' })
+          this.subscriptions.push(this._statsService.getIncomingRequest({ 'column.distinct': 'app_name','order': 'app_name.asc' })
             .subscribe({
               next: (appNames: { appName: string }[]) => {
+                this.serverNameIsLoading=false;
                 this.nameDataList = appNames.map(r => r.appName);
                 this.patchServerValue(this.params.serveurs);
+              },error: (e) => {
+                this.serverNameIsLoading=false;
+                console.log(e)
               }
             }));
           this.getIncomingRequest();

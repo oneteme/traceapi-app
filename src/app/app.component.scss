@@ -1,0 +1,77 @@
+.spacer {
+    flex: 1 1 auto;
+}
+
+mat-toolbar {
+    position: fixed;
+    height: 50px;
+}
+
+.content {
+    margin-top: 50px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.menu {
+    top: 38px;
+    left: 0;
+    padding-top: 18px;
+    padding-left: 4px;
+    padding-right: 4px;
+    height: 100%;
+    background-color: rgb(248, 248, 248);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+.menu .menu-element {
+    display: flex;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 250ms;
+    mat-icon {
+        transition: color 250ms;
+        color: rgb(65, 65, 65);
+    }
+    &:hover {
+        background-color: rgba(184, 201, 255, 0.4);
+        mat-icon {
+            color: #1464dc;
+        }
+    }
+    &.selected {
+        position: relative;
+        background-color: rgba(184, 201, 255, 0.5);
+        pointer-events: none;
+        mat-icon {
+            color: #1464dc;
+        }
+        &::before {
+            position: absolute;
+            content: "";
+            top: 17.5%;
+            right: -4px;
+            height: 65%;
+            width: 4px;
+            border-radius: 16px;
+            background-color: #1464dc;
+            opacity: .8;
+            animation: appear .4s ease;
+        }
+    }
+}
+
+@keyframes appear {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: initial;
+        opacity: .7;
+    }
+}

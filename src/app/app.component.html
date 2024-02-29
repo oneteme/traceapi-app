@@ -1,0 +1,46 @@
+<mat-drawer-container autosize>
+  <mat-drawer #drawer mode="over">
+    <div class="menu">
+      <a class="menu-element" [routerLink]="['session/api']" matTooltip="Liste des API">
+        <mat-icon class="material-symbols-outlined" fontIcon="swap_vert" />
+      </a>
+      <a class="menu-element" [routerLink]="['session/main']" matTooltip="Liste des Sessions">
+        <mat-icon class="material-symbols-outlined" fontIcon="repeat" />
+      </a>
+    </div>
+  </mat-drawer>
+
+
+
+
+  <mat-drawer-content>
+    <div style="display: flex; flex-direction: column; height: 100vh;">
+      <mat-toolbar color="primary">
+        <button mat-icon-button (click)="drawer.toggle()">
+          <mat-icon fontIcon="menu" />
+        </button>
+        <span>Trace Api</span>
+        <span class="spacer"></span>
+        <div style="margin-top: 21px;">
+          <mat-form-field appearance="fill" class="md-2">
+            <mat-select [formControl]="env" placeholder="environnement">
+              <mat-option value="dev">dev</mat-option>
+              <mat-option value="rec">rec</mat-option>
+              <mat-option value="rcc">rcc</mat-option>
+              <mat-option value="ppd">ppd</mat-option>
+              <mat-option value="prd">prd</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-toolbar>
+
+      <div class="content">
+        <div style="margin-top: 0.5em; margin-right: 0.5em; margin-left: 0.5em; margin-bottom: 0.5em;">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+
+  </mat-drawer-content>
+
+</mat-drawer-container>

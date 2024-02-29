@@ -1,0 +1,1 @@
+msBasePath="assets/mxgraph"

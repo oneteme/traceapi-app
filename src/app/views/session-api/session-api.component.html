@@ -16,13 +16,7 @@
         <span *ngIf="serverNameIsLoading && params.serveurs[0]!=''"><mat-option *ngFor="let s of params.serveurs" [value]="s">{{s}}</mat-option></span>
         <mat-option *ngFor="let d of nameDataList" [value]="d">{{d}}</mat-option>
       </mat-select>
-     <!-- <mat-label *ngIf="serverNameIsLoading">
-        <div class="select-placeholder-container">
-          <span>Loading...</span>
-          <mat-spinner class="spinner" diameter="20"></mat-spinner>
-        </div>
-      </mat-label>-->
-      <mat-spinner matSuffix *ngIf="serverNameIsLoading" [diameter]="18" style="float: right; margin-right: 4px"></mat-spinner>
+      <mat-spinner *ngIf="serverNameIsLoading" [diameter]="18"></mat-spinner>
     </mat-form-field>
     <button mat-mini-fab color="primary" (click)="search()">
       <mat-icon matSuffix>search</mat-icon>

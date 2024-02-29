@@ -23,11 +23,11 @@
         <span class="spacer"></span>
         <div style="margin-top: 21px;">
           <mat-form-field appearance="fill" class="md-2">
-            <mat-select [formControl]="env">
+            <mat-select [formControl]="env" [disabled]="isLoadingEnv">
               <!-- <mat-option><div style="display: flex; flex-direction: row;"><div>Loading ...</div><mat-spinner [diameter]="20" /></div></mat-option> -->
               <mat-option *ngFor="let e of envs" [value]="e">{{e}}</mat-option>
             </mat-select>
-            
+            <mat-spinner *ngIf="isLoadingEnv" [diameter]="18"></mat-spinner>
           </mat-form-field>
         </div>
       </mat-toolbar>

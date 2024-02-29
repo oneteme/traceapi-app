@@ -4,10 +4,23 @@
 
 export const environment = {
   production: false,
-  url : "http://localhost:9006"
+  url: "http://localhost:9006",
+  // dashboard: {
+  //   default_period: [makePeriod(shiftStart, daybetween)]
+  //   api: {
+      
+  //   }
+  // }
 };
 
+// function makePeriod(dayBetween: number, shiftEnd: number=0): { start: Date, end: Date } {
+//   var s = new Date();
 
+// }
+
+function default_date(date: Date, days?: number): Date {
+  return new Date(date.getFullYear(), date.getMonth(), days ? date.getDay() + days : date.getDay());
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

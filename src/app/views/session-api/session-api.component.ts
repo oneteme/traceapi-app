@@ -11,8 +11,6 @@ import { Utils } from 'src/app/shared/util';
 import { StatsService } from 'src/app/shared/services/stats.service';
 import { TraceService } from 'src/app/shared/services/trace.service';
 import { EnvRouter } from '../session-detail/session-detail.component';
-import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatInput } from '@angular/material/input';
 
 
 
@@ -59,17 +57,13 @@ export class SessionApiComponent implements OnInit, OnDestroy {
     this._activatedRoute.queryParams
       .subscribe({
         next: (params: Params) => {
+          console.log("params",params)
           this.params.env = params['env'] || EnvRouter.DEFAULT_ENV;
-          this.params.start = params['start'];
-          this.params.end = params['end']
+          this.params.start = params['start'] || this.DEFAULT_START.toISOString();
+          this.params.end = params['end'] || this.DEFAULT_END.toISOString();
           this.params.serveurs = Array.isArray(params['name']) ? params['name'] : [params['name'] || ''];
           if(this.params.serveurs[0]!=''){
             this.patchServerValue(this.params.serveurs)
-          }
-
-          if (!this.params.start || !this.params.end) {
-            this.params.start = this.DEFAULT_START.toISOString();
-            this.params.end = this.DEFAULT_END.toISOString();
           }
           this.params.endExclusive = new Date(this.params.end);
           this.params.endExclusive.setDate(this.params.endExclusive.getDate() + 1);

@@ -169,6 +169,16 @@ mat-form-field.no-subscript {
   height: 40px;
 }
 
+mat-form-field {
+
+  mat-spinner.mdc-circular-progress {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translate(0, -50%);
+  }
+}
+
 
 
 

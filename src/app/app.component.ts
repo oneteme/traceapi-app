@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { distinctUntilChanged, filter, skip } from 'rxjs';
+import { distinctUntilChanged, filter, finalize, skip } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { EnvRouter } from './views/session-detail/session-detail.component';
 import { MatDrawer } from '@angular/material/sidenav';
@@ -19,12 +19,15 @@ export class AppComponent implements OnInit {
   @ViewChild('drawer') drawer: MatDrawer;
   envs: any[];
   env: FormControl<string> = new FormControl();
+  isLoadingEnv = false;
   
 
   constructor(private activatedRoute: ActivatedRoute,
     private router: EnvRouter,
     private service: StatsService) {
+    this.isLoadingEnv = true;
     this.service.getIncomingRequest({'column.distinct': 'environement', 'order': 'environement.asc'})
+      .pipe(finalize(() => this.isLoadingEnv = false))
       .subscribe({
         next: (res: {environement: string}[]) => {
           this.envs = res.map(r => r.environement);
@@ -64,7 +67,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.envs =  [EnvRouter.DEFAULT_ENV];
-    this.env.setValue(EnvRouter.DEFAULT_ENV);
     if (!localStorage.getItem('server')) {
       localStorage.setItem('server', environment.url);
     }

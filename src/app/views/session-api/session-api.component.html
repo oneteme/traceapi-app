@@ -10,8 +10,9 @@
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
     <mat-form-field class="no-subscript" appearance="outline">
-
+      <mat-label>Serveur</mat-label>
       <mat-select [formControl]="serverFilterForm.controls.nameControl" multiple [disabled]="serverNameIsLoading">
+        
         <span *ngIf="serverNameIsLoading && params.serveurs[0]!=''"><mat-option *ngFor="let s of params.serveurs" [value]="s">{{s}}</mat-option></span>
         <mat-option *ngFor="let d of nameDataList" [value]="d">{{d}}</mat-option>
       </mat-select>
@@ -21,7 +22,7 @@
           <mat-spinner class="spinner" diameter="20"></mat-spinner>
         </div>
       </mat-label>-->
-      <mat-spinner matSuffix *ngIf="serverNameIsLoading" [diameter]="18"style="float: right; margin-right: 4px"></mat-spinner>
+      <mat-spinner matSuffix *ngIf="serverNameIsLoading" [diameter]="18" style="float: right; margin-right: 4px"></mat-spinner>
     </mat-form-field>
     <button mat-mini-fab color="primary" (click)="search()">
       <mat-icon matSuffix>search</mat-icon>

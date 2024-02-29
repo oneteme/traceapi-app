@@ -23,13 +23,11 @@
         <span class="spacer"></span>
         <div style="margin-top: 21px;">
           <mat-form-field appearance="fill" class="md-2">
-            <mat-select [formControl]="env" placeholder="environnement">
-              <mat-option value="dev">dev</mat-option>
-              <mat-option value="rec">rec</mat-option>
-              <mat-option value="rcc">rcc</mat-option>
-              <mat-option value="ppd">ppd</mat-option>
-              <mat-option value="prd">prd</mat-option>
+            <mat-select [formControl]="env">
+              <!-- <mat-option><div style="display: flex; flex-direction: row;"><div>Loading ...</div><mat-spinner [diameter]="20" /></div></mat-option> -->
+              <mat-option *ngFor="let e of envs" [value]="e">{{e}}</mat-option>
             </mat-select>
+            
           </mat-form-field>
         </div>
       </mat-toolbar>

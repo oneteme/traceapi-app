@@ -34,7 +34,7 @@ export class Constants {
     };
 
     static readonly REPARTITION_USER_POLAR: ChartConfig = {
-        title: 'Nombre d\'appels par utilisateur',
+        title: 'Nombre d\'appels par utilisateur (Top 5)',
         category: {
             type: 'string',
             mapper: 'user'

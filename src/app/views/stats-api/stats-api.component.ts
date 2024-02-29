@@ -6,6 +6,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable, Subscription, combineLatest, filter, finalize, map } from "rxjs";
 import { Constants } from "../constants";
+import { groupingBy } from "src/app/shared/util";
 
 @Component({
     templateUrl: './stats-api.component.html',
@@ -135,11 +136,25 @@ export class StatsApiComponent implements OnInit, OnDestroy {
             repartitionTimeAndTypeResponse: { observable: this._statsService.getIncomingRequest({ 'column': "count_slowest:elapsedTimeSlowest,count_slow:elapsedTimeSlow,count_medium:elapsedTimeMedium,count_fast:elapsedTimeFast,count_fastest:elapsedTimeFastest,count_succes:countSucces,count_error_server:countErrorServer,count_error_client:countErrorClient", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env }) },
             repartitionTimeAndTypeResponseByPeriod: { observable: this._statsService.getIncomingRequest({ 'column': "count_succes:countSucces,count_error_client:countErrorClient,count_error_server:countErrorServer,count_slowest:elapsedTimeSlowest,count_slow:elapsedTimeSlow,count_medium:elapsedTimeMedium,count_fast:elapsedTimeFast,count_fastest:elapsedTimeFastest,elapsedtime.avg:avg,elapsedtime.max:max,start.date:date", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env, 'order': 'start.date.asc' }) },
             repartitionRequestByPeriodLine: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,count_error_server:countErrorServer,count_slowest:countSlowest,start.date:date", 'api_name': name, 'start.ge': new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6).toISOString(), 'start.le': now.toISOString(), 'environement': env, 'order': 'start.date.asc' }) }, // 7 derniers jours
-            repartitionUserPolar: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,user:user", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env, 'user.not': 'null', 'order': 'count.desc' }) },
-            repartitionUserBar: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,start.date:date,user:user", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env, 'user.not': 'null', 'order': 'start.date.desc' }) },
+            repartitionUserPolar: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,user:user", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env, 'user.not': 'null', 'order': 'count.desc' }).pipe(map((r: any[]) => r.slice(0, 5))) },
+            repartitionUserBar: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,start.date:date,user:user", 'api_name': name, 'start.ge': start.toISOString(), 'start.le': end.toISOString(), 'environement': env, 'user.not': 'null', 'order': 'start.date.desc' }).pipe(map((r: any[]) => {
+                let groupBy = groupingBy(r, 'user');
+                let results: {count: number, user: string, date: any}[] = Object.entries(groupBy).map((value: [string, any[]]) => {
+                    return {
+                        totalCount: value[1].reduce((acc: number, o) => {
+                            return acc + o['count'];
+                        }, 0),
+                        user: value[0],
+                        data: value[1]
+                    }
+                }).sort((a, b) => {
+                    return b.totalCount - a.totalCount 
+                }).slice(0, 5).flatMap(r => r.data);
+                return results;
+            })) },
             dependentsTable: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,count_succes:countSucces,count_error_client:countErrClient,count_error_server:countErrServer,request2.api_name:name", "request.id": "out.parent", "out.id": "request2.id", 'request.api_name': name, 'request.start.ge': start.toISOString(), 'request.start.le': end.toISOString(), 'request2.start.ge': start.toISOString(), 'request2.start.le': end.toISOString(), 'environement': env, 'request2.api_name.not': 'null', 'order': 'count.desc' }) },
             dependenciesTable: { observable: this._statsService.getIncomingRequest({ 'column': "count:count,count_succes:countSucces,count_error_client:countErrClient,count_error_server:countErrServer,request.api_name:name", "request.id": "out.parent", "out.id": "request2.id", 'request2.api_name': name, 'request2.start.ge': start.toISOString(), 'request2.start.le': end.toISOString(), 'request.start.ge': start.toISOString(), 'request.start.le': end.toISOString(), 'environement': env, 'request.api_name.not': 'null', 'order': 'count.desc' }) },
-            exceptionsTable: { observable: this._statsService.getIncomingRequest({ 'column': 'count,err_type.coalesce(null),err_msg.coalesce(null)', 'err_type.not': 'null', 'err_msg.not': 'null', "environement": env, "api_name": name, 'start.ge': start.toISOString(), 'start.lt': end.toISOString(), 'order': 'count.desc' }).pipe(map((d: any) => d.slice(0, 4))) }
+            exceptionsTable: { observable: this._statsService.getIncomingRequest({ 'column': 'count,err_type.coalesce(null),err_msg.coalesce(null)', 'err_type.not': 'null', 'err_msg.not': 'null', "environement": env, "api_name": name, 'start.ge': start.toISOString(), 'start.lt': end.toISOString(), 'order': 'count.desc' }).pipe(map((d: any) => d.slice(0, 5))) }
         };
     }
 }

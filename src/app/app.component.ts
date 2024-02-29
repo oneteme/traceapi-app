@@ -17,19 +17,19 @@ import { StatsService } from './shared/services/stats.service';
 
 export class AppComponent implements OnInit {
   @ViewChild('drawer') drawer: MatDrawer;
-  env: FormControl<string> = new FormControl(EnvRouter.DEFAULT_ENV);
   envs: any[];
+  env: FormControl<string> = new FormControl();
+  
 
   constructor(private activatedRoute: ActivatedRoute,
     private router: EnvRouter,
     private service: StatsService) {
-    
-    // this.service.getIncomingRequest({'column.distinct': 'environement', 'order': 'environement.asc'})
-    //   .subscribe({
-    //     next: (res: {environement: string}[]) => {
-    //       this.envs = res.map(r => {r .environement});
-    //     }
-    //   });
+    this.service.getIncomingRequest({'column.distinct': 'environement', 'order': 'environement.asc'})
+      .subscribe({
+        next: (res: {environement: string}[]) => {
+          this.envs = res.map(r => r.environement);
+        }
+      });
     this.env.valueChanges
       .pipe(
         distinctUntilChanged((previous: string, current: string) => {
@@ -63,6 +63,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.envs =  [EnvRouter.DEFAULT_ENV];
+    this.env.setValue(EnvRouter.DEFAULT_ENV);
     if (!localStorage.getItem('server')) {
       localStorage.setItem('server', environment.url);
     }
